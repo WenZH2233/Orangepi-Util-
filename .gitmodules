@@ -1,0 +1,9 @@
+[submodule "voice_rec/voiceprint-api"]
+	path = voice_rec/voiceprint-api
+	url = https://github.com/WenZH2233/voiceprint-api.git
+[submodule "voice_rec/py-xiaozhi"]
+	path = voice_rec/py-xiaozhi
+	url = https://github.com/WenZH2233/py-xiaozhi.git
+[submodule "voice_rec/xiaozhi-esp32-server"]
+	path = voice_rec/xiaozhi-esp32-server
+	url = https://github.com/WenZH2233/xiaozhi-esp32-server.git
