@@ -6,7 +6,7 @@
   ==================================================================
 -->
 
-## 11/4/2025 - Created BOM and initialized repository  
+## 11/4/2025 12 AM - Created BOM and initialized repository  
 
 Created BOM.csv
 Introduced xiaozhi-esp32-server
@@ -16,5 +16,15 @@ These three repositories are used for speech recognition and AI access
 A schematic diagram of a 40-pin pin header was created using CAD
 
 ![SnowShot_2025-11-04_00-15-22](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ODA5MSwicHVyIjoiYmxvYl9pZCJ9fQ==--42d0da086a294ea8a30be132c0f851a3970bfc10/SnowShot_2025-11-04_00-15-22.png)
+  
+
+## 11/4/2025 1 PM - Basic framework created  
+
+Added tv_box folder for handling set-top box files
+Created readme_cn.md and updated readme.md to introduce the project
+Added basic frameworks for 2 MCPs.
+
+
+![1762234370510_capture_result](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ODI3NiwicHVyIjoiYmxvYl9pZCJ9fQ==--c115651bdef751936df665f74f1b4e585c555724/1762234370510_capture_result.png)
   
 
