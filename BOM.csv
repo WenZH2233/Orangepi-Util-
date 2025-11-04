@@ -1,5 +1,7 @@
 Item,Description,Quantity,Unit Price(гд),Total Price($),URL,Running Total ($ with Tax),Note
 orangepi 5-puls,Single-Board Computer,1,1030,145.0704225,https://p.goofish.com/p/oAeRKZWi,145.0704225,
 Infrared module,for adding infrared control functionality,1,16.4,2.309859155,https://mobile.yangkeduo.com/goods2.html?ps=41mug4mxAw,147.3802817,"""You need to log in to your account to view product details. This is a restriction set by the purchasing platform. You can send me a private message, and I can provide you with screenshots of the details page."""
-Speaker,Speaker,1,3.2,0.450704225,https://mobile.yangkeduo.com/goods1.html?ps=yE1US8XVJV,147.8309859,
-,,,,0,,147.8309859,
+Wireless network card,network support,1,50.1,7.056338028,https://mobile.yangkeduo.com/goods1.html?ps=CUKzeDywfM,154.4366197,
+Speaker,Speaker,1,3.2,0.450704225,https://mobile.yangkeduo.com/goods1.html?ps=yE1US8XVJV,154.887324,
+DHT11,indoor temperature,1,0,0,,154.887324,I have an old DHT11
+Fan,fan for orangepi,1,0,0,,154.887324,I have an old fan
