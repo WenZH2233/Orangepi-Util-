@@ -1,0 +1,50 @@
+{
+  "name": "dianshitime",
+  "version": "1.0.7",
+  "description": "An Electron application with Vue and TypeScript",
+  "main": "./out/main/index.js",
+  "author": {
+    "name": "hedashen",
+    "email": "hedashen@example.com"
+  },
+  "homepage": "https://electron-vite.org",
+  "scripts": {
+    "build": "USE_SYSTEM_FPM=true electron-builder --arm64",
+    "dev": "ELECTRON_ENABLE_LOGGING=1 ELECTRON_DISABLE_SECURITY_WARNINGS=true electron .",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "@nut-tree-fork/libnut": "4.2.6",
+    "@nut-tree-fork/nut-js": "^4.2.6",
+    "electron-store": "7.0.3",
+    "electron-updater": "^6.3.9",
+    "vue": "^3.5.22",
+    "vue-router": "^4.5.1"
+  },
+  "build": {
+    "appId": "com.hedashen.dianshitime",
+    "productName": "dianshitime",
+    "files": [
+      ".fitten/**/*",
+      "out/**/*",
+      "public/**/*",
+      "resources/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "resources/**/*"
+    ],
+    "linux": {
+      "icon": "resources/icon.png",
+      "target": [
+        "deb"
+      ],
+      "category": "AudioVideo"
+    }
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.1",
+    "electron": "^31.0.1",
+    "electron-builder": "^24.13.3"
+  }
+}
