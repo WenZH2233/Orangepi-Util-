@@ -28,3 +28,12 @@ Added basic frameworks for 2 MCPs.
 ![1762234370510_capture_result](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ODI3NiwicHVyIjoiYmxvYl9pZCJ9fQ==--c115651bdef751936df665f74f1b4e585c555724/1762234370510_capture_result.png)
   
 
+## 11/5/2025 - Prepare the set-top box code  
+
+I found that the software I need only has an amd64 version, not an arm64, so I have to decompile it and recompile it into arm64, so I first completed the decompilation of the source code
+
+Fortunately, it is written in election, which is very easy to decompile
+
+![SnowShot_2025-11-05_12-29-02](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ODQ5NCwicHVyIjoiYmxvYl9pZCJ9fQ==--e75a71e1ce417db700471ffad7e7c632b05ed2fb/SnowShot_2025-11-05_12-29-02.png)
+  
+
