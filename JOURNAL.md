@@ -37,3 +37,14 @@ Fortunately, it is written in election, which is very easy to decompile
 ![SnowShot_2025-11-05_12-29-02](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ODQ5NCwicHVyIjoiYmxvYl9pZCJ9fQ==--e75a71e1ce417db700471ffad7e7c632b05ed2fb/SnowShot_2025-11-05_12-29-02.png)
   
 
+## 11/10/2025 - Designing client circuits and PCB  
+
+I plan to separate the client and use ESP32 as the client
+I designed a small circuit that can be conveniently carried on the go, and drew a double-sided PCB to further reduce the size. According to my calculations, it should be able to be worn on the wrist as a watch
+
+
+
+![SnowShot_2025-11-10_12-56-21](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6OTk2MCwicHVyIjoiYmxvYl9pZCJ9fQ==--0cd0629c22eda8ee048918e17e36e6622f4987a8/SnowShot_2025-11-10_12-56-21.png)
+![SnowShot_2025-11-10_13-03-29](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6OTk2MywicHVyIjoiYmxvYl9pZCJ9fQ==--7ce7a4e9187ea89260266e1030d5e108c2caa2eb/SnowShot_2025-11-10_13-03-29.png)
+  
+
