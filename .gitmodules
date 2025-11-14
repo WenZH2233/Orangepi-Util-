@@ -7,3 +7,6 @@
 [submodule "voice_rec/xiaozhi-esp32-server"]
 	path = voice_rec/xiaozhi-esp32-server
 	url = https://github.com/WenZH2233/xiaozhi-esp32-server.git
+[submodule "voice_rec/esp32-client"]
+	path = voice_rec/esp32-client
+	url = https://github.com/WenZH2233/xiaozhi-esp32
