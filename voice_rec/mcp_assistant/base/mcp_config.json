@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "local-stdio-all": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["all_tools.py"]
+    }
+  }
+}

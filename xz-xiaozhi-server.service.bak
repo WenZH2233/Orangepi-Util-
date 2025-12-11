@@ -1,0 +1,18 @@
+[Unit]
+Description=xiaozhi-server (Python WebSocket engine)
+After=network-online.target xz-xiaozhi-server.service
+Wants=network-online.target xz-xiaozhi-server.service
+
+[Service]
+Type=simple
+User=orangepi
+Group=orangepi
+WorkingDirectory=/home/orangepi/Orangepi-Util-/voice_rec/mcp_assistant/calculator
+ExecStart=/usr/bin/env bash -lc 'source /opt/anaconda3/etc/profile.d/conda.sh && conda activate mcp && export MCP_ENDPOINT=ws://192.168.0.6:8006/mcp_endpoint/mcp/?token=3YkVdHW2T9LiDS6EBAkbQQ%%2Bzu7E%%2Fd9pmeb7ZBC%%2FJpY4U%%2BhsQX7sraTiSi4%%2B8vpo5 && python mcp_pipe.py calculator.py'
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
