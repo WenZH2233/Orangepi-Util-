@@ -10,10 +10,11 @@ from .utils import get_logger
 from .tools import (
 	list_ir_codes,
 	send_ir_by_name,
-	send_ir_by_hex,
 	learn_ir_and_save,
 	get_ir_code_info,
 	set_ir_code_info,
+	test_ir_connection,
+	get_learning_result,
 )
 
 logger = get_logger(__name__)
@@ -53,16 +54,7 @@ class IRControlManager:
 			)
 		)
 
-		# 直接发送十六进制字符串
-		props_send_hex = PropertyList([Property("hex", PropertyType.STRING)])
-		add_tool(
-			(
-				"self.ir.send_hex",
-				"直接发送十六进制红外编码字符串，字节之间可有空格。",
-				props_send_hex,
-				send_ir_by_hex,
-			)
-		)
+
 
 		# 获取单个红外码信息
 		props_get_info = PropertyList([Property("name", PropertyType.STRING)])
@@ -95,12 +87,41 @@ class IRControlManager:
 		)
 
 		# 学习外部红外并保存
+		props_learn = PropertyList(
+			[
+				Property("name", PropertyType.STRING, default_value=""),
+				Property("description", PropertyType.STRING, default_value=""),
+				Property("aliases", PropertyType.STRING, default_value=""),
+				Property("category", PropertyType.STRING, default_value=""),
+				Property("device", PropertyType.STRING, default_value=""),
+			]
+		)
 		add_tool(
 			(
 				"self.ir.learn_external",
-				"进入学习模式，学习成功后自动保存到 hex 目录，返回保存的文件路径。",
-				PropertyList(),
+				"进入后台学习模式。调用后立即返回，请在30秒内按下遥控器按键。可指定 name 直接保存为该名称。",
+				props_learn,
 				learn_ir_and_save,
+			)
+		)
+
+		# 获取学习结果
+		add_tool(
+			(
+				"self.ir.get_learning_result",
+				"获取最近一次红外学习的结果（状态、文件路径或错误信息）。",
+				PropertyList(),
+				get_learning_result,
+			)
+		)
+
+		# 测试连接
+		add_tool(
+			(
+				"self.ir.test_connection",
+				"测试红外模块串口连接状态。",
+				PropertyList(),
+				test_ir_connection,
 			)
 		)
 

@@ -1,3 +1,5 @@
 voice_rec/mcp
 *.deb
 *.pyc
+*.hex
+voice_rec/mcp_assistant/base/data/ir_codes/codes_meta.json

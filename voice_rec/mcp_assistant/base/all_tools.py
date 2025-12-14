@@ -29,10 +29,11 @@ from tools.calendar_tools import (
 from tools.ir_control_tools import (
     list_ir_codes,
     send_ir_by_name,
-    send_ir_by_hex,
     learn_ir_and_save,
     get_ir_code_info,
-    set_ir_code_info
+    set_ir_code_info,
+    test_ir_connection,
+    get_learning_result
 )
 
 # Create an MCP server
@@ -56,11 +57,22 @@ mcp.tool()(get_categories)
 mcp.tool()(get_upcoming_events)
 mcp.tool()(list_ir_codes)
 mcp.tool()(send_ir_by_name)
-mcp.tool()(send_ir_by_hex)
 mcp.tool()(learn_ir_and_save)
 mcp.tool()(get_ir_code_info)
 mcp.tool()(set_ir_code_info)
+mcp.tool()(test_ir_connection)
+mcp.tool()(get_learning_result)
 
 # Start the server
 if __name__ == "__main__":
+    tool_names = [
+        "calculator", "get_current_time", "get_temperature_humidity",
+        "set_volume", "get_volume", "launch_application", "get_system_info",
+        "create_event", "get_events_by_date", "update_event", "delete_event",
+        "delete_events_batch", "get_categories", "get_upcoming_events",
+        "list_ir_codes", "send_ir_by_name", "learn_ir_and_save",
+        "get_ir_code_info", "set_ir_code_info", "test_ir_connection",
+        "get_learning_result"
+    ]
+    logger.info(f"MCP Server initialized. Loaded {len(tool_names)} tools: {', '.join(tool_names)}")
     mcp.run(transport="stdio")

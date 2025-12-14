@@ -2,10 +2,11 @@ from typing import Optional
 from .ir_control.tools import (
     list_ir_codes as _list_ir_codes,
     send_ir_by_name as _send_ir_by_name,
-    send_ir_by_hex as _send_ir_by_hex,
     learn_ir_and_save as _learn_ir_and_save,
     get_ir_code_info as _get_ir_code_info,
-    set_ir_code_info as _set_ir_code_info
+    set_ir_code_info as _set_ir_code_info,
+    test_ir_connection as _test_ir_connection,
+    get_learning_result as _get_learning_result
 )
 
 async def list_ir_codes() -> str:
@@ -22,19 +23,34 @@ async def send_ir_by_name(name: str) -> str:
     """
     return _send_ir_by_name({"name": name})
 
-async def send_ir_by_hex(hex_str: str) -> str:
+async def learn_ir_and_save(name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[str] = None, category: Optional[str] = None, device: Optional[str] = None) -> str:
     """
-    Send raw IR hex data.
-    hex_str: The hex string of the IR data.
+    Enter background IR learning mode. Returns immediately.
+    name: (Optional) Name to save the IR code as.
+    description: (Optional) Description.
+    aliases: (Optional) Aliases.
+    category: (Optional) Category.
+    device: (Optional) Device name.
     """
-    return _send_ir_by_hex({"hex": hex_str})
+    args = {}
+    if name: args["name"] = name
+    if description: args["description"] = description
+    if aliases: args["aliases"] = aliases
+    if category: args["category"] = category
+    if device: args["device"] = device
+    return _learn_ir_and_save(args)
 
-async def learn_ir_and_save() -> str:
+async def get_learning_result() -> str:
     """
-    Enter IR learning mode and save the received code.
-    Returns the path of the saved file.
+    Get the result of the last IR learning operation.
     """
-    return _learn_ir_and_save({})
+    return _get_learning_result({})
+
+async def test_ir_connection() -> str:
+    """
+    Test the connection to the IR module.
+    """
+    return _test_ir_connection({})
 
 async def get_ir_code_info(name: str) -> str:
     """

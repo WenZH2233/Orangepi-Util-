@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import os
 import time
+import threading
 from typing import Dict, List, Any
 
 try:
@@ -180,50 +181,179 @@ def send_ir_by_hex(args: Dict) -> str:
 	return _send_external_data(data)
 
 
-def learn_ir_and_save(_: Dict) -> str:
-	"""进入外部学习模式，成功后保存到 hex 目录
+# 全局学习状态
+_learning_state = {
+	"status": "idle",  # idle, learning, success, error
+	"result": None,    # filepath or error message
+	"timestamp": 0,
+	"name": None
+}
+_learning_lock = threading.Lock()
 
-	设备交互流程：
-	- 发送 AFN=0x20 进入学习
-	- 可能先收到状态帧 AFN=0x01, 然后再收到 AFN=0x22 的数据帧
-	- 将数据部分保存为 .hex 文件
-	"""
+def _background_learn_task(target_name: str = None, meta_info: Dict = None):
+	global _learning_state
+	
 	hex_dir = _find_hex_dir()
 	os.makedirs(hex_dir, exist_ok=True)
 
-	ser = _open_serial()
+	ser = None
 	try:
-		logger.info("进入外部学习模式...")
+		ser = _open_serial()
+		# 增加超时时间，给用户更多时间操作遥控器
+		ser.timeout = 30
+		# 设置字节间超时
+		ser.inter_byte_timeout = 0.5
+		
+		logger.info("进入外部学习模式(后台)...")
 		ser.write(_build_frame(0x20))
 
-		# 等待第一段数据
-		resp = ser.read(500)
-		if resp and len(resp) >= 7 and resp[0] == 0x68 and resp[4] == 0x22:
-			data = resp[5:-2]
-		elif resp and len(resp) >= 8 and resp[0] == 0x68 and resp[4] == 0x01:
-			# 继续等待真正数据帧
-			resp2 = ser.read(800)
-			if resp2 and len(resp2) >= 7 and resp2[0] == 0x68 and resp2[4] == 0x22:
-				data = resp2[5:-2]
+		buffer = bytearray()
+		start_time = time.time()
+		data = None
+
+		# 循环读取直到超时或获取到有效数据
+		while time.time() - start_time < 35:
+			chunk = ser.read(1024)
+			if chunk:
+				buffer.extend(chunk)
+				
+				# 尝试在 buffer 中寻找有效帧
+				i = 0
+				while i < len(buffer):
+					if buffer[i] == 0x68:
+						if i + 2 < len(buffer):
+							frame_len = buffer[i+1] + (buffer[i+2] << 8)
+							if i + frame_len <= len(buffer):
+								frame = buffer[i : i+frame_len]
+								if len(frame) > 4:
+									afn = frame[4]
+									if afn == 0x22:
+										data = frame[5:-2]
+										break
+									elif afn == 0x01:
+										pass
+								i += frame_len
+								continue
+					i += 1
+				
+				if data:
+					break
 			else:
-				raise RuntimeError("未收到学习成功的数据帧")
-		else:
-			raise RuntimeError(f"未收到有效响应: {resp.hex(' ') if resp else '无'}")
+				if not buffer:
+					break
+				pass
 
 		if not data:
-			raise RuntimeError("学习数据为空")
+			debug_hex = buffer.hex(' ') if buffer else '无'
+			raise RuntimeError(f"未收到有效的红外学习数据 (AFN=0x22)。收到的数据: {debug_hex}")
 
-		filename = f"ir_code_{int(time.time())}.hex"
+		# 保存文件
+		if target_name:
+			# 如果指定了名称，直接使用该名称
+			final_name = target_name
+			filename = f"{target_name}.hex"
+		else:
+			# 否则使用时间戳
+			final_name = f"ir_code_{int(time.time())}"
+			filename = f"{final_name}.hex"
+			
 		save_path = os.path.abspath(os.path.join(hex_dir, filename))
 		with open(save_path, "w") as f:
 			f.write(data.hex(" "))
 
-		return json.dumps({"saved": save_path, "bytes": len(data)}, ensure_ascii=False)
+		# 如果有元数据，更新 meta
+		if meta_info or target_name:
+			meta = _load_codes_meta(hex_dir)
+			if not isinstance(meta, dict):
+				meta = {}
+			
+			entry = meta.get(final_name, {})
+			if meta_info:
+				entry.update(meta_info)
+			
+			meta[final_name] = entry
+			_save_codes_meta(meta, hex_dir)
+
+		with _learning_lock:
+			_learning_state["status"] = "success"
+			_learning_state["result"] = save_path
+			_learning_state["name"] = final_name
+			_learning_state["timestamp"] = time.time()
+			
+	except Exception as e:
+		with _learning_lock:
+			_learning_state["status"] = "error"
+			_learning_state["result"] = str(e)
+			_learning_state["timestamp"] = time.time()
 	finally:
-		try:
-			ser.close()
-		except Exception:
-			pass
+		if ser:
+			try:
+				ser.close()
+			except Exception:
+				pass
+
+
+def learn_ir_and_save(args: Dict) -> str:
+	"""进入外部学习模式（后台运行）
+
+	参数：
+	- name: (可选) 保存的红外码名称（如 tv_power）。如果不填则自动生成。
+	- description: (可选) 描述
+	- aliases: (可选) 别名
+	- category: (可选) 分类
+	- device: (可选) 设备名
+
+	立即返回，不等待用户按键。
+	"""
+	global _learning_state
+	
+	with _learning_lock:
+		if _learning_state["status"] == "learning":
+			# 如果已经在学习中，检查是否超时（例如超过40秒）
+			if time.time() - _learning_state["timestamp"] < 40:
+				return json.dumps({"status": "busy", "message": "正在学习中，请勿重复调用"}, ensure_ascii=False)
+		
+		_learning_state["status"] = "learning"
+		_learning_state["result"] = None
+		_learning_state["name"] = None
+		_learning_state["timestamp"] = time.time()
+
+	# 提取元数据
+	target_name = args.get("name")
+	if target_name:
+		target_name = target_name.strip()
+	
+	meta_info = {}
+	for key in ["description", "category", "device"]:
+		if args.get(key):
+			meta_info[key] = args[key].strip()
+	
+	if args.get("aliases"):
+		raw = args["aliases"]
+		if isinstance(raw, str):
+			meta_info["aliases"] = [s.strip() for s in raw.split(",") if s.strip()]
+		elif isinstance(raw, list):
+			meta_info["aliases"] = raw
+
+	t = threading.Thread(target=_background_learn_task, args=(target_name, meta_info))
+	t.daemon = True
+	t.start()
+
+	msg = "已进入后台学习模式。请在30秒内按下遥控器按键。"
+	if target_name:
+		msg += f" 学习成功后将保存为 '{target_name}'。"
+	
+	return json.dumps({
+		"status": "started", 
+		"message": msg
+	}, ensure_ascii=False)
+
+
+def get_learning_result(_: Dict) -> str:
+	"""获取最近一次学习的结果"""
+	with _learning_lock:
+		return json.dumps(_learning_state, ensure_ascii=False)
+
 
 
 def get_ir_code_info(args: Dict) -> str:
@@ -320,3 +450,13 @@ def set_ir_code_info(args: Dict) -> str:
 		ensure_ascii=False,
 	)
 
+
+def test_ir_connection(_: Dict) -> str:
+    """测试红外模块连接状态"""
+    try:
+        ser = _open_serial()
+        port_name = ser.name
+        ser.close()
+        return f"串口连接成功: {port_name}"
+    except Exception as e:
+        return f"串口连接失败: {str(e)}"
