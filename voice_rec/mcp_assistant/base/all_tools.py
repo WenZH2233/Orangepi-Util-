@@ -35,6 +35,8 @@ from tools.ir_control_tools import (
     test_ir_connection,
     get_learning_result
 )
+from tools.bing_search_tools import web_search
+from tools.web_content_tools import read_webpage
 
 # Create an MCP server
 mcp = FastMCP("AllTools")
@@ -62,6 +64,8 @@ mcp.tool()(get_ir_code_info)
 mcp.tool()(set_ir_code_info)
 mcp.tool()(test_ir_connection)
 mcp.tool()(get_learning_result)
+mcp.tool()(web_search)
+mcp.tool()(read_webpage)
 
 # Start the server
 if __name__ == "__main__":
@@ -72,7 +76,7 @@ if __name__ == "__main__":
         "delete_events_batch", "get_categories", "get_upcoming_events",
         "list_ir_codes", "send_ir_by_name", "learn_ir_and_save",
         "get_ir_code_info", "set_ir_code_info", "test_ir_connection",
-        "get_learning_result"
+        "get_learning_result", "web_search", "read_webpage"
     ]
     logger.info(f"MCP Server initialized. Loaded {len(tool_names)} tools: {', '.join(tool_names)}")
     mcp.run(transport="stdio")
